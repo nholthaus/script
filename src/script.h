@@ -17,7 +17,7 @@ public:
 	static Script& instance();
 	
 	void registerCommand(CommandCallback&& cc);
-	void run(const std::string& filePath);
+	static void run(const std::string& filePath);
 
 private:
 

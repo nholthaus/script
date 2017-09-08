@@ -12,10 +12,11 @@ void Script::registerCommand(CommandCallback&& cc)
 
 void Script::run(const std::string& filePath)
 {
+	auto& me = instance();
 	auto&& commands = Parser::parse(filePath);
 	for (const Command& command : commands)
 	{
-		m_callbacks[command.name](command.args);
+		me.m_callbacks[command.name](command.args);
 	}
 }
 
