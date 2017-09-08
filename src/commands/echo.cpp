@@ -1,5 +1,6 @@
 #include "echo.h"
 #include "script.h"
+#include "commandCallback.h"
 
 #include <iostream>
 

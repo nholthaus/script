@@ -1,5 +1,7 @@
 #include "wait.h"
 #include "script.h"
+#include "commandCallback.h"
+
 #include <thread>
 
 Wait::Wait()

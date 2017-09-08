@@ -3,9 +3,10 @@
 #include <string>
 #include <functional>
 #include <map>
+#include <vector>
 
-#include "commandCallback.h"
-#include "command.h"
+struct Command;
+struct CommandCallback;
 
 class Script
 {
@@ -16,7 +17,7 @@ public:
 	static Script& instance();
 	
 	void registerCommand(CommandCallback&& cc);
-	void run(const Commands& commands);
+	void run(const std::string& filePath);
 
 private:
 

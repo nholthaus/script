@@ -27,5 +27,5 @@ struct Command
 	std::string name;
 	std::string args;
 };
-using Commands = std::vector<Command>;
 
+using Commands = std::vector<Command>;
