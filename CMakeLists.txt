@@ -29,6 +29,7 @@ src/script.h
 
 # .cpp files
 list(APPEND SOURCE_FILES
+src/command.cpp
 src/main.cpp
 src/parser.cpp
 src/script.cpp

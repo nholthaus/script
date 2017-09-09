@@ -1,6 +1,4 @@
 #include "parser.h"
-#include "command.h"
-#include "script.h"
 
 #include <sstream>
 
