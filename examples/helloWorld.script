@@ -1,0 +1,10 @@
+echo Hello
+wait 1
+echo .
+wait 1
+echo .
+wait 1
+echo .
+wait 1
+echo World!
+wait 2

@@ -2,18 +2,16 @@
 #include "command.h"
 #include "script.h"
 
-Commands Parser::parse(const std::string& filePath)
+#include <sstream>
+
+Commands Parser::parse(const std::string& script)
 {
 	Commands commands;
-
-	std::ifstream file;
-	file.open(filePath, std::ios::in);
+	std::istringstream ss(script);
 
 	std::string line;
-	while (std::getline(file, line))
-	{
+	while (std::getline(ss, line))
 		commands.push_back(line);
-	}
 
 	return commands;
 }

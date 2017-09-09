@@ -1,0 +1,22 @@
+#include "commandCallback.h"
+#include "scriptInstance.h"
+
+#define QUOTED_BASENAME(x) #x
+#define STRINGIFIED_BASENAME(x) x
+#define REGISTER_COMMAND(code) REGISTER_COMMAND____(FILE_BASENAME, code)
+#define REGISTER_COMMAND____(name, code)															\
+																									\
+struct name																							\
+{																									\
+	name ## ()																						\
+	{																								\
+		ScriptInstance::registerCommand(															\
+		{																							\
+			QUOTED_BASENAME(name),																	\
+			[](const std::string& args)																\
+		{																							\
+			code																					\
+		}																							\
+		});																							\
+	}																								\
+} STRINGIFIED_BASENAME(name) ## _;
