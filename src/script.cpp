@@ -4,13 +4,11 @@
 
 #include <iostream>
 
-
 ScriptInstance& Script::instance = ScriptInstance::getInstance();
 
 void Script::run(const std::string& filePath)
 {
-	auto&& commands = Parser::parse(filePath);
-	for (const Command& command : commands)
+	for (const Command& command : Parser::parse(filePath))
 	{
 		instance.m_callbacks[command.name](command.args);
 	}
