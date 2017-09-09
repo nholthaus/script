@@ -1,7 +1,7 @@
 #include "commandCallback.h"
 #include "command.h"
 
-#include <map>
+#include <unordered_map>
 
 struct ScriptInstance
 {
@@ -26,5 +26,5 @@ private:
 	ScriptInstance(const ScriptInstance&) = delete;
 	void operator=(const ScriptInstance&) = delete;
 
-	std::map<std::string, Callback> m_callbacks;
+	std::unordered_map<std::string, Callback> m_callbacks;
 };
