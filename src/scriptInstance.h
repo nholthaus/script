@@ -17,7 +17,7 @@ public:
 	}
 	static void registerCommand(CommandCallback&& cc)
 	{
-		getInstance().m_callbacks.insert(std::make_pair(std::move(cc.name), std::move(cc.callback)));
+		getInstance().m_callbacks.emplace(std::make_pair(std::move(cc.name), std::move(cc.callback)));
 	}
 
 private:
