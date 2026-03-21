@@ -9,7 +9,7 @@ Commands Parser::parse(const std::string& script)
 
 	std::string line;
 	while (std::getline(ss, line))
-		commands.push_back(line);
+		commands.emplace_back(line);
 
 	return commands;
 }

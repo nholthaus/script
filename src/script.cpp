@@ -6,9 +6,9 @@
 
 ScriptInstance& Script::instance = ScriptInstance::getInstance();
 
-void Script::run(const std::string& filePath)
+void Script::run(const std::string& script)
 {
-	for (const Command& command : Parser::parse(filePath))
+	for (const Command& command : Parser::parse(script))
 	{
 		instance.m_callbacks[command.name](command.args);
 	}
