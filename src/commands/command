@@ -1,22 +1,28 @@
 #include "commandCallback.h"
 #include "scriptInstance.h"
 
-#define QUOTED_BASENAME(x) #x
-#define STRINGIFIED_BASENAME(x) x
-#define REGISTER_COMMAND(code) REGISTER_COMMAND____(FILE_BASENAME, code)
-#define REGISTER_COMMAND____(name, code)															\
-																									\
-struct name																							\
-{																									\
-	name ## ()																						\
-	{																								\
-		ScriptInstance::registerCommand(															\
-		{																							\
-			QUOTED_BASENAME(name),																	\
-			[](const std::string& args)																\
-		{																							\
-			code																					\
-		}																							\
-		});																							\
-	}																								\
-} STRINGIFIED_BASENAME(name) ## _;
+#ifndef FILE_BASENAME
+#error FILE_BASENAME must be defined by the build system for command registration.
+#endif
+
+#define STRINGIFY_IMPL(x) #x
+#define STRINGIFY(x) STRINGIFY_IMPL(x)
+#define JOIN_IMPL(a, b) a##b
+#define JOIN(a, b) JOIN_IMPL(a, b)
+
+#define REGISTER_COMMAND(code) REGISTER_COMMAND_IMPL(FILE_BASENAME, code)
+#define REGISTER_COMMAND_IMPL(name, code)                                                         \
+	struct name                                                                                   \
+	{                                                                                             \
+		name()                                                                                    \
+		{                                                                                         \
+			ScriptInstance::registerCommand(                                                      \
+			{                                                                                     \
+				STRINGIFY(name),                                                                  \
+				[](const std::string& args)                                                       \
+				{                                                                                 \
+					code                                                                          \
+				}                                                                                 \
+			});                                                                                   \
+		}                                                                                         \
+	} JOIN(name, _);
