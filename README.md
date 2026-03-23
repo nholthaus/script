@@ -11,6 +11,8 @@ This project demonstrates a simple command registration pattern where commands a
 - Built-in commands:
   - `echo <text>`
   - `wait <seconds>`
+  - `var <name> <value>`
+- Variable system with `$` dereferencing
 - Simple macro-based command registration for adding new commands
 
 ## Requirements
@@ -56,6 +58,7 @@ Each line is interpreted as:
 Example (`examples/helloWorld.script`):
 
 ```text
+var helloWhat World!
 echo Hello
 wait 1
 echo .
@@ -64,8 +67,38 @@ echo .
 wait 1
 echo .
 wait 1
-echo World!
+echo $helloWhat
 wait 2
+ret 0
+```
+
+### Variables
+
+Variables can be defined and referenced in scripts:
+
+**Defining variables:**
+```text
+var <name> <value>
+```
+
+**Using variables:**
+```text
+echo $variableName
+```
+
+**Features:**
+- Variable names support alphanumeric characters and underscores
+- Values can contain spaces if quoted: `var message "Hello World"`
+- Variables are dereferenced automatically before command execution
+- Variables persist throughout the script's lifetime
+- Variables are implicitly stored as string values
+
+**Example:**
+```text
+var greeting "Hello, World!"
+var count 42
+echo $greeting
+echo Count: $count
 ```
 
 ## Adding Commands
