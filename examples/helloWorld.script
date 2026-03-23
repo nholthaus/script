@@ -9,3 +9,4 @@ echo .
 wait 1
 echo $helloWhat
 wait 2
+ret 0

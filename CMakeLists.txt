@@ -8,37 +8,41 @@ cmake_minimum_required(VERSION 3.10)
 #	COMMAND SOURCE CODE
 #-------------------------------------------------------------------------------
 
-# .cpp files
-list(APPEND COMMAND_SOURCE_FILES
-src/commands/command
-src/commands/echo.cpp
-src/commands/wait.cpp
-src/commands/var.cpp
+# Glob command files and configure CMake to reconfigure when files are added/removed
+file(GLOB COMMAND_SOURCE_FILES CONFIGURE_DEPENDS
+	"src/commands/*.cpp"
+	"src/commands/command"
 )
 
 #-------------------------------------------------------------------------------
-#	SOURCE CODE
+#	UTILS SOURCE CODE
 #-------------------------------------------------------------------------------
 
-# .h files
-list(APPEND HEADER_FILES
-src/command.h
-src/commandCallback.h
-src/parser.h
-src/script.h
+# Glob utils files and configure CMake to reconfigure when files are added/removed
+file(GLOB UTILS_HEADER_FILES CONFIGURE_DEPENDS
+	"src/utils/*.h"
 )
 
-# .cpp files
-list(APPEND SOURCE_FILES
-src/command.cpp
-src/main.cpp
-src/parser.cpp
-src/script.cpp
+file(GLOB UTILS_SOURCE_FILES CONFIGURE_DEPENDS
+	"src/utils/*.cpp"
+)
+
+#-------------------------------------------------------------------------------
+#	SCRIPT SOURCE CODE
+#-------------------------------------------------------------------------------
+
+# Glob main source files and configure CMake to reconfigure when files are added/removed
+file(GLOB HEADER_FILES CONFIGURE_DEPENDS
+	"src/*.h"
+)
+
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS
+	"src/*.cpp"
 )
 
 # on windows, append headers to source so they show up in visual studio
 if(WIN32)
-	LIST(APPEND SOURCE_FILES ${HEADER_FILES})
+	LIST(APPEND SOURCE_FILES ${HEADER_FILES} ${UTILS_HEADER_FILES})
 endif()
 
 # Set the project name
@@ -54,14 +58,14 @@ set(CMAKE_CXX_STANDARD 23)
 if(MSVC)
 	add_compile_options(/MP)
 elseif(CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-std=c++17)
+	add_compile_options(-std=c++23)
 endif(MSVC)
 
 #-------------------------------------------------------------------------------
 #	HELPERS
 #-------------------------------------------------------------------------------
 
-# Helper function to add preprocesor definition of FILE_BASENAME
+# Helper function to add preprocessor definition of FILE_BASENAME
 # to pass the filename without directory path for debugging use.
 #
 # Example:
@@ -94,9 +98,18 @@ endfunction()
 #-------------------------------------------------------------------------------
 
 # Set additional include directories
-include_directories(${INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src/commands)
+include_directories(
+		${INCLUDE_DIRS}
+		${PROJECT_SOURCE_DIR}/src
+		${PROJECT_SOURCE_DIR}/src/commands
+		${PROJECT_SOURCE_DIR}/src/utils
+)
 
 # Generate the executable
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${COMMAND_SOURCE_FILES})
+add_executable(${PROJECT_NAME}
+		${SOURCE_FILES}
+		${COMMAND_SOURCE_FILES}
+		${UTILS_SOURCE_FILES}
+)
 
 define_file_basename_for_sources(${PROJECT_NAME})

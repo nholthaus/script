@@ -1,5 +1,4 @@
 #include <command>
-#include <iostream>
 
 REGISTER_COMMAND
 (

@@ -1,7 +1,13 @@
 #include <command>
-#include <iostream>
+#include <split.h>
 
 REGISTER_COMMAND
 (
-    ScriptInstance::registerVariable("name","val");
+	const auto splitArgs = utils::splitQuoted(args);
+	if (splitArgs.size() != 2)
+	{
+		std::cerr << "ERROR: 'var' requires <name> <value> arguments. Line: " << CURRENT_LINE << std::endl;
+	}
+
+	ScriptInstance::registerVariable(splitArgs[0], splitArgs[1]);
 )

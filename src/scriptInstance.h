@@ -36,10 +36,21 @@ struct ScriptInstance
         return getInstance().m_variables.at(name);
     }
 
+	static size_t getCurrentLine()
+    {
+	    return getInstance().m_currentLine;
+    }
+
+	static void incrementCurrentLine()
+    {
+	    getInstance().m_currentLine++;
+    }
+
 private:
     ScriptInstance() = default;
 
     std::unordered_map<std::string, Callback> m_callbacks{};
     Commands m_commands{};
     std::unordered_map<std::string, std::string> m_variables{};
+	size_t m_currentLine = 1;
 };

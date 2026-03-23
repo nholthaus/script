@@ -72,6 +72,12 @@ wait 2
 
 Commands are registered through the `REGISTER_COMMAND(...)` macro in files under `src/commands/`.
 
+Commands are required to:
+- split their own arguments (see `utils` for common helpers)
+- error check their own args (use `std::cerr` and `CURRENT_LINE`)
+
+All variables will be dereferenced prior to the invocation of the command callback.
+
 Minimal example:
 
 ```cpp
@@ -89,7 +95,7 @@ How registration works:
 
 - The command name is derived from the source file basename.
   - Example: `src/commands/echo.cpp` registers command `echo`.
-- Command files must be added to `COMMAND_SOURCE_FILES` in `CMakeLists.txt`.
+- Command files are added to `COMMAND_SOURCE_FILES` in `CMakeLists.txt` via `GLOB`.
 
 ## Macro Reference
 
@@ -125,6 +131,16 @@ examples/
 - Lines are expected to include both a command and arguments.
 - Unknown command names currently result in a failed callback lookup.
 
+## Ideas for Improvement
+
+- Streamlined error handling
+- Command help registration
+- More commands
+  - Math
+  - Loops
+  - Conditionals
+  - Scopes
+  
 ## License
 
 MIT. See [LICENSE](LICENSE).

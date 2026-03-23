@@ -14,6 +14,7 @@ void Script::run(const std::string& script)
     {
         dereferenceVariables(command.args);
         instance.m_callbacks[command.name](command.args);
+		ScriptInstance::incrementCurrentLine();
     }
 }
 
@@ -27,8 +28,7 @@ void Script::dereferenceVariables(std::string& args)
 
     for (auto itr = lineBegin; itr != lineEnd; ++itr)
     {
-        auto match = *itr;
-        if (match.size() >= 2)
+		if (const auto& match = *itr; match.size() >= 2)
         {
             auto varName = match[1].str();
             try

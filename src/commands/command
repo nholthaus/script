@@ -1,5 +1,8 @@
+#pragma once
+
 #include "commandCallback.h"
 #include "scriptInstance.h"
+#include <iostream>
 
 #ifndef FILE_BASENAME
 #error FILE_BASENAME must be defined by the build system for command registration.
@@ -26,3 +29,6 @@
 			});                                                                                   \
 		}                                                                                         \
 	} JOIN(name, _);
+
+#define COMMAND_NAME STRINGIFY(FILE_BASENAME)
+#define CURRENT_LINE ScriptInstance::getCurrentLine()
