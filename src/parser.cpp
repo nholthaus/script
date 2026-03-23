@@ -4,8 +4,8 @@
 
 Commands Parser::parse(const std::string& script)
 {
-	Commands commands;
-	std::istringstream ss(script);
+    Commands commands;
+    std::istringstream ss(script);
 
 	std::string line;
 	while (std::getline(ss, line))

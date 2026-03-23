@@ -13,6 +13,7 @@ list(APPEND COMMAND_SOURCE_FILES
 src/commands/command
 src/commands/echo.cpp
 src/commands/wait.cpp
+src/commands/var.cpp
 )
 
 #-------------------------------------------------------------------------------

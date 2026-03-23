@@ -3,9 +3,11 @@
 
 Command::Command(const std::string& line)
 {
-	std::smatch matches;
-	std::regex rgx("(.*?)\\s+(.*)");
-	if (std::regex_match(line, matches, rgx))
+	// split line into command + args
+	// args are a single string so that each newly added command can
+	// parse them as they please
+	const std::regex rgx("(.*?)\\s+(.*)");
+	if (std::smatch matches; std::regex_match(line, matches, rgx))
 	{
 		if (matches.size() >= 2)
 		{

@@ -1,3 +1,4 @@
+var helloWhat World!
 echo Hello
 wait 1
 echo .
@@ -6,5 +7,5 @@ echo .
 wait 1
 echo .
 wait 1
-echo World!
+echo $helloWhat
 wait 2

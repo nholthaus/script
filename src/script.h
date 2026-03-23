@@ -41,10 +41,11 @@ struct ScriptInstance;
 class Script
 {
 public:
-
-	static void run(const std::string& script);
+    static void run(const std::string& script);
 
 private:
+    static void dereferenceVariables(std::string& args);
 
-	static ScriptInstance& instance;
+private:
+    static ScriptInstance& instance;
 };
