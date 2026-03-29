@@ -32,7 +32,7 @@
 
 #define COMMAND STRINGIFY(FILE_BASENAME)
 #define LINE ScriptInstance::getLineNumber()
-#define INSTRUCTION_PTR ScriptInstance::getInstructionPtr()
+#define INSTRUCTION ScriptInstance::getInstructionIndex()
 #define PUSH_STACK ScriptInstance::pushStack()
 #define POP_STACK ScriptInstance::popStack()
 

@@ -31,24 +31,48 @@ struct ScriptInstance
         getInstance().m_variables.emplace(name, value);
     }
 
+    static Commands& setCommands(Commands&& commands)
+    {
+        auto& instance = getInstance();
+        instance.m_commands = std::move(commands);
+        instance.m_instructionIndex = 0;
+        instance.m_callstack = {};
+        return instance.m_commands;
+    }
+
+    static Commands& getCommands()
+    {
+        return getInstance().m_commands;
+    }
+
     static std::string getVariable(const std::string& name)
     {
         return getInstance().m_variables.at(name);
     }
 
-	static size_t getLineNumber()
-	{
-	    return getInstance().m_instructionPtr->lineNumber;
+    static Command& getCurrentCommand()
+    {
+        return getInstance().m_commands.at(getInstructionIndex());
     }
 
-	static Commands::iterator& getInstructionPtr()
+	static size_t getLineNumber()
+	{
+	    return getCurrentCommand().lineNumber;
+    }
+
+	static size_t& getInstructionIndex()
     {
-	    return getInstance().m_instructionPtr;
+	    return getInstance().m_instructionIndex;
+    }
+
+	static size_t& getInstructionPtr()
+    {
+	    return getInstructionIndex();
     }
 
 	static void pushStack()
     {
-	   getInstance().m_callstack.push(getInstructionPtr());
+	   getInstance().m_callstack.push(getInstructionIndex());
     }
 
 	static bool popStack()
@@ -56,7 +80,7 @@ struct ScriptInstance
     	if (getInstance().m_callstack.empty())
     		return false;
 
-	    getInstance().m_instructionPtr = getInstance().m_callstack.top();
+	    getInstance().m_instructionIndex = getInstance().m_callstack.top();
     	getInstance().m_callstack.pop();
     	return true;
     }
@@ -66,7 +90,7 @@ private:
 
     std::unordered_map<std::string, Callback> m_callbacks{};
     Commands m_commands{};
-	Commands::iterator m_instructionPtr = m_commands.begin();
-	std::stack<Commands::iterator> m_callstack{};
+	size_t m_instructionIndex = 0;
+	std::stack<size_t> m_callstack{};
     std::unordered_map<std::string, std::string> m_variables{};
 };

@@ -9,20 +9,21 @@ ScriptInstance& Script::instance = ScriptInstance::getInstance();
 
 void Script::run(const std::string& script)
 {
-	auto commands = Parser::parse(script);
-	auto& executionPtr = ScriptInstance::getInstructionPtr();
-    for (executionPtr = commands.begin(); executionPtr != commands.end(); ++executionPtr)
+	auto& commands = ScriptInstance::setCommands(Parser::parse(script));
+	auto& executionIndex = ScriptInstance::getInstructionIndex();
+    for (executionIndex = 0; executionIndex < commands.size(); ++executionIndex)
     {
+		auto& command = commands[executionIndex];
     	try
     	{
-    		dereferenceVariables(executionPtr->args);
-    		instance.m_callbacks[executionPtr->name](executionPtr->args);
+    		dereferenceVariables(command.args);
+    		instance.m_callbacks[command.name](command.args);
     	}
     	catch (...)
     	{
-    		if (!executionPtr->name.empty())
+    		if (!command.name.empty())
     		{
-    			std::cerr << std::endl << "FATAL ERROR: Invalid command '" << executionPtr->name << "'" << std::endl;
+    			std::cerr << std::endl << "FATAL ERROR: Invalid command '" << command.name << "'" << std::endl;
     		}
     	}
     }
