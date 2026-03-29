@@ -11,8 +11,9 @@ REGISTER_COMMAND
 	}
 	catch (...)
 	{
-		std::cerr << "ERROR: " << COMMAND_NAME << " requires a single integer argument <value>. Line: " << CURRENT_LINE << std::endl;
+		ERROR("requires a single integer argument <value>");
 	}
 
-	std::exit(value);
+	if (!POP_STACK)
+		std::exit(value);
 )

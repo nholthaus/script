@@ -2,7 +2,8 @@ var helloWhat World!
 echo Hello
 wait 1
 echo .
-wait 1
+
+wait
 echo .
 wait 1
 echo .

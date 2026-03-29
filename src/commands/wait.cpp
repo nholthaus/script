@@ -12,7 +12,7 @@ REGISTER_COMMAND
 	}
 	catch (...)
 	{
-		std::cerr << "ERROR: " << COMMAND_NAME << " required a single integer argument <time_s>. Line: " << CURRENT_LINE << std::endl;
+		ERROR("requires a single integer argument <time_s>");
 	}
 
 	std::this_thread::sleep_for(std::chrono::seconds(value));

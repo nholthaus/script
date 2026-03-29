@@ -1,8 +1,8 @@
 #pragma once
 
-#include "commandCallback.h"
 #include "command.h"
-
+#include "commandCallback.h"
+#include <stack>
 #include <unordered_map>
 
 // There are probably macros you should be using instead of invoking these functions
@@ -36,14 +36,29 @@ struct ScriptInstance
         return getInstance().m_variables.at(name);
     }
 
-	static size_t getCurrentLine()
-    {
-	    return getInstance().m_currentLine;
+	static size_t getLineNumber()
+	{
+	    return getInstance().m_instructionPtr->lineNumber;
     }
 
-	static void incrementCurrentLine()
+	static Commands::iterator& getInstructionPtr()
     {
-	    getInstance().m_currentLine++;
+	    return getInstance().m_instructionPtr;
+    }
+
+	static void pushStack()
+    {
+	   getInstance().m_callstack.push(getInstructionPtr());
+    }
+
+	static bool popStack()
+    {
+    	if (getInstance().m_callstack.empty())
+    		return false;
+
+	    getInstance().m_instructionPtr = getInstance().m_callstack.top();
+    	getInstance().m_callstack.pop();
+    	return true;
     }
 
 private:
@@ -51,6 +66,7 @@ private:
 
     std::unordered_map<std::string, Callback> m_callbacks{};
     Commands m_commands{};
+	Commands::iterator m_instructionPtr = m_commands.begin();
+	std::stack<Commands::iterator> m_callstack{};
     std::unordered_map<std::string, std::string> m_variables{};
-	size_t m_currentLine = 1;
 };

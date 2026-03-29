@@ -30,5 +30,10 @@
 		}                                                                                         \
 	} JOIN(name, _);
 
-#define COMMAND_NAME STRINGIFY(FILE_BASENAME)
-#define CURRENT_LINE ScriptInstance::getCurrentLine()
+#define COMMAND STRINGIFY(FILE_BASENAME)
+#define LINE ScriptInstance::getLineNumber()
+#define INSTRUCTION_PTR ScriptInstance::getInstructionPtr()
+#define PUSH_STACK ScriptInstance::pushStack()
+#define POP_STACK ScriptInstance::popStack()
+
+#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << ". Line: " << LINE << std::endl;

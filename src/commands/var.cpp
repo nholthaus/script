@@ -6,7 +6,7 @@ REGISTER_COMMAND
 	const auto splitArgs = utils::splitQuoted(args);
 	if (splitArgs.size() != 2)
 	{
-		std::cerr << "ERROR: 'var' requires <name> <value> arguments. Line: " << CURRENT_LINE << std::endl;
+		ERROR("requires <name> <value> arguments");
 	}
 
 	ScriptInstance::registerVariable(splitArgs[0], splitArgs[1]);

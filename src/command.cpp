@@ -1,7 +1,8 @@
 #include "command.h"
 #include <regex>
 
-Command::Command(const std::string& line)
+Command::Command(const std::string& line, size_t lineNumber)
+	: lineNumber(lineNumber)
 {
 	// split line into command + args
 	// args are a single string so that each newly added command can
@@ -17,5 +18,9 @@ Command::Command(const std::string& line)
 		{
 			args = std::move(matches[2]);
 		}
+	}
+	else
+	{
+		name = line;
 	}
 }
