@@ -9,5 +9,5 @@ REGISTER_COMMAND
 		ERROR("requires <name> <value> arguments");
 	}
 
-	ScriptInstance::registerVariable(splitArgs[0], splitArgs[1]);
+	SET_VARIABLE(splitArgs[0], splitArgs[1]);
 )

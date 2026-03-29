@@ -1,0 +1,29 @@
+#pragma once
+
+#include "commandCallback.h"
+#include "scriptInstance.h"
+
+#ifndef FILE_BASENAME
+#error FILE_BASENAME must be defined by the build system for command registration.
+#endif
+
+#define STRINGIFY_IMPL(x) #x
+#define STRINGIFY(x) STRINGIFY_IMPL(x)
+#define JOIN_IMPL(a, b) a##b
+#define JOIN(a, b) JOIN_IMPL(a, b)
+
+#define REGISTER_COMMAND_IMPL(name, code)                                                         \
+	struct name                                                                                   \
+	{                                                                                             \
+		name()                                                                                    \
+		{                                                                                         \
+			ScriptInstance::registerCommand(                                                      \
+			{                                                                                     \
+				STRINGIFY(name),                                                                  \
+				[](const std::string& args)                                                       \
+				{                                                                                 \
+					code                                                                          \
+				}                                                                                 \
+			});                                                                                   \
+		}                                                                                         \
+	} JOIN(name, _);

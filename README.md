@@ -160,7 +160,7 @@ Commands are registered through the `REGISTER_COMMAND(...)` macro in files under
 
 Commands are required to:
 - split their own arguments (see `utils` for common helpers)
-- error check their own args (use `std::cerr` and `CURRENT_LINE`)
+- error check their own args (use `ERROR(...)` and `LINE`)
 
 All variables will be dereferenced prior to the invocation of the command callback.
 
@@ -185,7 +185,8 @@ How registration works:
 
 ## Macro Reference
 
-Macros are defined in `src/commands/command`.
+User-facing command macros are defined in `src/commands/command`.
+Macro implementation details live in `src/commands/command_impl.h`.
 
 ### `REGISTER_COMMAND(code)`
 
@@ -198,6 +199,58 @@ Use this in a command source file under `src/commands/` to register one command 
 - Command name: inferred from the file basename via `FILE_BASENAME`
 
 Use this macro for normal command implementation work.
+
+### `COMMAND`
+
+Expands to the current command name inferred from the source file basename.
+
+Useful in diagnostics and logging.
+
+### `LINE`
+
+Expands to the current script line number at execution time.
+
+Use this in command error messages.
+
+### `INSTRUCTION`
+
+Expands to the current instruction index in the active program.
+
+This is intended for control-flow commands that need execution position.
+
+### `PUSH_STACK`
+
+Pushes the current instruction index onto the call stack.
+
+Use this when implementing command-driven call/return behavior.
+
+### `POP_STACK`
+
+Pops the most recent instruction index from the call stack and restores it as the current instruction.
+
+Returns `false` if the stack is empty.
+
+### `SET_VARIABLE(name, value)`
+
+Sets or overwrites a variable.
+
+### `GET_VARIABLE(name)`
+
+Returns the value of a variable.
+
+This throws if the variable does not exist.
+
+### `HAS_VARIABLE(name)`
+
+Returns whether a variable exists.
+
+### `REMOVE_VARIABLE(name)`
+
+Removes a variable and returns whether one was removed.
+
+### `ERROR(msg)`
+
+Writes a standardized command error message including the command name and current line number.
 
 ## Project Layout
 

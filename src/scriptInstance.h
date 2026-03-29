@@ -26,9 +26,9 @@ struct ScriptInstance
 		getInstance().m_callbacks.emplace(std::move(cc.name), std::move(cc.callback));
     }
 
-    static void registerVariable(const std::string& name, const std::string& value)
+    static void setVariable(const std::string& name, const std::string& value)
     {
-        getInstance().m_variables.emplace(name, value);
+        getInstance().m_variables.insert_or_assign(name, value);
     }
 
     static Commands& setCommands(Commands&& commands)
@@ -50,6 +50,16 @@ struct ScriptInstance
         return getInstance().m_variables.at(name);
     }
 
+    static bool hasVariable(const std::string& name)
+    {
+        return getInstance().m_variables.contains(name);
+    }
+
+    static bool removeVariable(const std::string& name)
+    {
+        return getInstance().m_variables.erase(name) > 0;
+    }
+
     static Command& getCurrentCommand()
     {
         return getInstance().m_commands.at(getInstructionIndex());
@@ -63,11 +73,6 @@ struct ScriptInstance
 	static size_t& getInstructionIndex()
     {
 	    return getInstance().m_instructionIndex;
-    }
-
-	static size_t& getInstructionPtr()
-    {
-	    return getInstructionIndex();
     }
 
 	static void pushStack()
