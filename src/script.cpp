@@ -1,7 +1,6 @@
 #include "script.h"
 #include "parser.h"
 #include "scriptInstance.h"
-
 #include <iostream>
 #include <regex>
 
