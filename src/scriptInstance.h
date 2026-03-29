@@ -45,6 +45,16 @@ struct ScriptInstance
         return getInstance().m_commands;
     }
 
+    static size_t getCommandCount()
+    {
+        return getInstance().m_commands.size();
+    }
+
+    static Command& getCommand(size_t index)
+    {
+        return getInstance().m_commands.at(index);
+    }
+
     static std::string getVariable(const std::string& name)
     {
         return getInstance().m_variables.at(name);
@@ -62,7 +72,7 @@ struct ScriptInstance
 
     static Command& getCurrentCommand()
     {
-        return getInstance().m_commands.at(getInstructionIndex());
+        return getCommand(getInstructionIndex());
     }
 
 	static size_t getLineNumber()
@@ -73,6 +83,16 @@ struct ScriptInstance
 	static size_t& getInstructionIndex()
     {
 	    return getInstance().m_instructionIndex;
+    }
+
+	static bool isValidInstruction(size_t index)
+    {
+	    return index < getCommandCount();
+    }
+
+	static void setInstruction(size_t index)
+    {
+	    getInstructionIndex() = index;
     }
 
 	static void pushStack()

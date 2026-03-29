@@ -4,6 +4,23 @@ Lightweight, extensible, text-based scripting engine written in C++17.
 
 This project demonstrates a simple command registration pattern where commands are defined in C++ and executed from plain-text script files.
 
+## Design Philosophy
+
+This project is intentionally built around a very small core runtime.
+
+The core is responsible for:
+- registering commands
+- parsing each line into a command name plus raw argument text
+- owning runtime program state
+- exposing execution control and variable state
+- dispatching commands
+
+New language features should be implemented as commands whenever possible.
+
+That means control flow, syntax conventions, and higher-level language behavior are meant to grow additively through command implementations rather than through constant core refactors.
+
+The design goal is a tiny, stable kernel with a wide command surface, so commands can be implemented independently and in parallel.
+
 ## Features
 
 - C++17 implementation with CMake build

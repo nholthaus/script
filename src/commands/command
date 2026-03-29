@@ -16,6 +16,21 @@
 // The current instruction index in the active program.
 #define INSTRUCTION ScriptInstance::getInstructionIndex()
 
+// The number of commands in the active program.
+#define COMMAND_COUNT ScriptInstance::getCommandCount()
+
+// The current command object in the active program.
+#define CURRENT_COMMAND ScriptInstance::getCurrentCommand()
+
+// Returns the command at the given instruction index.
+#define GET_COMMAND(index) ScriptInstance::getCommand(index)
+
+// Returns whether an instruction index is valid for the active program.
+#define VALID_INSTRUCTION(index) ScriptInstance::isValidInstruction(index)
+
+// Sets the current instruction index.
+#define SET_INSTRUCTION(index) ScriptInstance::setInstruction(index)
+
 // Pushes the current instruction index onto the runtime call stack.
 #define PUSH_STACK ScriptInstance::pushStack()
 
