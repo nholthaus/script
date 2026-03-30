@@ -1,5 +1,7 @@
 var helloWhat World!
 echo Hello
+
+# Wait a little bit
 wait 1
 echo .
 wait 1
@@ -7,6 +9,8 @@ echo .
 wait 1
 echo .
 wait 1
+
+// Surprise!
 echo $helloWhat
 wait 2
 ret 0

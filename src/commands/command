@@ -1,34 +1,53 @@
 #pragma once
 
-#include "commandCallback.h"
-#include "scriptInstance.h"
+#include "command_impl.h"
 #include <iostream>
 
-#ifndef FILE_BASENAME
-#error FILE_BASENAME must be defined by the build system for command registration.
-#endif
-
-#define STRINGIFY_IMPL(x) #x
-#define STRINGIFY(x) STRINGIFY_IMPL(x)
-#define JOIN_IMPL(a, b) a##b
-#define JOIN(a, b) JOIN_IMPL(a, b)
-
+// Registers one command using the current source file basename as the command name.
+// The provided code block is used as the command callback body and can access `args`.
 #define REGISTER_COMMAND(code) REGISTER_COMMAND_IMPL(FILE_BASENAME, code)
-#define REGISTER_COMMAND_IMPL(name, code)                                                         \
-	struct name                                                                                   \
-	{                                                                                             \
-		name()                                                                                    \
-		{                                                                                         \
-			ScriptInstance::registerCommand(                                                      \
-			{                                                                                     \
-				STRINGIFY(name),                                                                  \
-				[](const std::string& args)                                                       \
-				{                                                                                 \
-					code                                                                          \
-				}                                                                                 \
-			});                                                                                   \
-		}                                                                                         \
-	} JOIN(name, _);
 
-#define COMMAND_NAME STRINGIFY(FILE_BASENAME)
-#define CURRENT_LINE ScriptInstance::getCurrentLine()
+// The current command name derived from the source file basename.
+#define COMMAND STRINGIFY(FILE_BASENAME)
+
+// The current script line number at execution time.
+#define LINE ScriptInstance::getLineNumber()
+
+// The current instruction index in the active program.
+#define INSTRUCTION ScriptInstance::getInstructionIndex()
+
+// The number of commands in the active program.
+#define COMMAND_COUNT ScriptInstance::getCommandCount()
+
+// The current command object in the active program.
+#define CURRENT_COMMAND ScriptInstance::getCurrentCommand()
+
+// Returns the command at the given instruction index.
+#define GET_COMMAND(index) ScriptInstance::getCommand(index)
+
+// Returns whether an instruction index is valid for the active program.
+#define VALID_INSTRUCTION(index) ScriptInstance::isValidInstruction(index)
+
+// Sets the current instruction index.
+#define SET_INSTRUCTION(index) ScriptInstance::setInstruction(index)
+
+// Pushes the current instruction index onto the runtime call stack.
+#define PUSH_STACK ScriptInstance::pushStack()
+
+// Restores the most recent instruction index from the runtime call stack.
+#define POP_STACK ScriptInstance::popStack()
+
+// Sets or overwrites a variable value.
+#define SET_VARIABLE(name, value) ScriptInstance::setVariable(name, value)
+
+// Gets a variable value, throwing if the variable does not exist.
+#define GET_VARIABLE(name) ScriptInstance::getVariable(name)
+
+// Returns whether a variable exists.
+#define HAS_VARIABLE(name) ScriptInstance::hasVariable(name)
+
+// Removes a variable and returns whether one was removed.
+#define REMOVE_VARIABLE(name) ScriptInstance::removeVariable(name)
+
+// Writes a standard command error message with the command name and line number.
+#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << ". Line: " << LINE << std::endl;

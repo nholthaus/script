@@ -1,8 +1,8 @@
 #pragma once
 
-#include "commandCallback.h"
 #include "command.h"
-
+#include "types/commandCallback.h"
+#include <stack>
 #include <unordered_map>
 
 // There are probably macros you should be using instead of invoking these functions
@@ -26,9 +26,33 @@ struct ScriptInstance
 		getInstance().m_callbacks.emplace(std::move(cc.name), std::move(cc.callback));
     }
 
-    static void registerVariable(const std::string& name, const std::string& value)
+    static void setVariable(const std::string& name, const std::string& value)
     {
-        getInstance().m_variables.emplace(name, value);
+        getInstance().m_variables.insert_or_assign(name, value);
+    }
+
+    static Commands& setCommands(Commands&& commands)
+    {
+        auto& instance = getInstance();
+        instance.m_commands = std::move(commands);
+        instance.m_instructionIndex = 0;
+        instance.m_callstack = {};
+        return instance.m_commands;
+    }
+
+    static Commands& getCommands()
+    {
+        return getInstance().m_commands;
+    }
+
+    static size_t getCommandCount()
+    {
+        return getInstance().m_commands.size();
+    }
+
+    static Command& getCommand(size_t index)
+    {
+        return getInstance().m_commands.at(index);
     }
 
     static std::string getVariable(const std::string& name)
@@ -36,14 +60,54 @@ struct ScriptInstance
         return getInstance().m_variables.at(name);
     }
 
-	static size_t getCurrentLine()
+    static bool hasVariable(const std::string& name)
     {
-	    return getInstance().m_currentLine;
+        return getInstance().m_variables.contains(name);
     }
 
-	static void incrementCurrentLine()
+    static bool removeVariable(const std::string& name)
     {
-	    getInstance().m_currentLine++;
+        return getInstance().m_variables.erase(name) > 0;
+    }
+
+    static Command& getCurrentCommand()
+    {
+        return getCommand(getInstructionIndex());
+    }
+
+	static size_t getLineNumber()
+	{
+	    return getCurrentCommand().lineNumber;
+    }
+
+	static size_t& getInstructionIndex()
+    {
+	    return getInstance().m_instructionIndex;
+    }
+
+	static bool isValidInstruction(size_t index)
+    {
+	    return index < getCommandCount();
+    }
+
+	static void setInstruction(size_t index)
+    {
+	    getInstructionIndex() = index;
+    }
+
+	static void pushStack()
+    {
+	   getInstance().m_callstack.push(getInstructionIndex());
+    }
+
+	static bool popStack()
+    {
+    	if (getInstance().m_callstack.empty())
+    		return false;
+
+	    getInstance().m_instructionIndex = getInstance().m_callstack.top();
+    	getInstance().m_callstack.pop();
+    	return true;
     }
 
 private:
@@ -51,6 +115,7 @@ private:
 
     std::unordered_map<std::string, Callback> m_callbacks{};
     Commands m_commands{};
+	size_t m_instructionIndex = 0;
+	std::stack<size_t> m_callstack{};
     std::unordered_map<std::string, std::string> m_variables{};
-	size_t m_currentLine = 1;
 };

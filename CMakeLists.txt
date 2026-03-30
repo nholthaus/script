@@ -110,6 +110,7 @@ add_executable(${PROJECT_NAME}
 		${SOURCE_FILES}
 		${COMMAND_SOURCE_FILES}
 		${UTILS_SOURCE_FILES}
+		src/utils/no_op.h
 )
 
 define_file_basename_for_sources(${PROJECT_NAME})

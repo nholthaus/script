@@ -1,7 +1,6 @@
 #include "script.h"
 #include "parser.h"
 #include "scriptInstance.h"
-
 #include <iostream>
 #include <regex>
 
@@ -10,11 +9,23 @@ ScriptInstance& Script::instance = ScriptInstance::getInstance();
 
 void Script::run(const std::string& script)
 {
-    for (Command& command : Parser::parse(script))
+	auto& commands = ScriptInstance::setCommands(Parser::parse(script));
+	auto& executionIndex = ScriptInstance::getInstructionIndex();
+    for (executionIndex = 0; executionIndex < commands.size(); ++executionIndex)
     {
-        dereferenceVariables(command.args);
-        instance.m_callbacks[command.name](command.args);
-		ScriptInstance::incrementCurrentLine();
+		auto& command = commands[executionIndex];
+    	try
+    	{
+    		dereferenceVariables(command.args);
+    		instance.m_callbacks[command.name](command.args);
+    	}
+    	catch (...)
+    	{
+    		if (!command.name.empty())
+    		{
+    			std::cerr << std::endl << "FATAL ERROR: Invalid command '" << command.name << "'" << std::endl;
+    		}
+    	}
     }
 }
 
