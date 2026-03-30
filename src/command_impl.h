@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commandCallback.h"
+#include "types/commandCallback.h"
 #include "scriptInstance.h"
 
 #ifndef FILE_BASENAME

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "command.h"
-#include "commandCallback.h"
+#include "types/commandCallback.h"
 #include <stack>
 #include <unordered_map>
 
