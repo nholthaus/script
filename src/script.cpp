@@ -1,15 +1,16 @@
 #include "script.h"
 #include "parser.h"
 #include "scriptInstance.h"
+#include <filesystem>
 #include <iostream>
 #include <regex>
 
 ScriptInstance& Script::instance = ScriptInstance::getInstance();
 
 
-void Script::run(const std::string& script)
+void Script::run(const std::filesystem::path& scriptPath)
 {
-	auto& commands = ScriptInstance::setCommands(Parser::parse(script));
+	auto& commands = ScriptInstance::setCommands(Parser::parse(scriptPath));
 	auto& executionIndex = ScriptInstance::getInstructionIndex();
     for (executionIndex = 0; executionIndex < commands.size(); ++executionIndex)
     {

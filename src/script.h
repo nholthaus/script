@@ -34,6 +34,7 @@
 //--------------------------------------------------------------------------------------------------
 
 #pragma once
+#include <filesystem>
 #include <string>
 
 struct ScriptInstance;
@@ -41,7 +42,7 @@ struct ScriptInstance;
 class Script
 {
 public:
-    static void run(const std::string& script);
+    static void run(const std::filesystem::path& scriptPath);
 
 private:
     static void dereferenceVariables(std::string& args);

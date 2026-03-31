@@ -103,6 +103,7 @@ include_directories(
 		${PROJECT_SOURCE_DIR}/src
 		${PROJECT_SOURCE_DIR}/src/commands
 		${PROJECT_SOURCE_DIR}/src/utils
+		${PROJECT_SOURCE_DIR}/src/types
 )
 
 # Generate the executable

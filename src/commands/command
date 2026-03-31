@@ -13,6 +13,8 @@
 // The current script line number at execution time.
 #define LINE ScriptInstance::getLineNumber()
 
+#define SOURCE ScriptInstance::getSource()
+
 // The current instruction index in the active program.
 #define INSTRUCTION ScriptInstance::getInstructionIndex()
 
@@ -50,4 +52,4 @@
 #define REMOVE_VARIABLE(name) ScriptInstance::removeVariable(name)
 
 // Writes a standard command error message with the command name and line number.
-#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << ". Line: " << LINE << std::endl;
+#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << " : " << SOURCE << std::endl;

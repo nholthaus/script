@@ -75,9 +75,14 @@ struct ScriptInstance
         return getCommand(getInstructionIndex());
     }
 
+	static Source& getSource()
+    {
+    	return getCurrentCommand().source;
+    }
+
 	static size_t getLineNumber()
 	{
-	    return getCurrentCommand().lineNumber;
+	    return getCurrentCommand().source.lineNumber();
     }
 
 	static size_t& getInstructionIndex()

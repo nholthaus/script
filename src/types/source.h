@@ -1,24 +1,26 @@
 #pragma once
 
 #include <filesystem>
+#include <ostream>
 #include <string>
 #include <utility>
 
+/// Small class that represents a file/line pair
 struct Source
 {
 	Source() = default;
 
-	explicit Source(std::filesystem::path path, size_t lineNumber = 0)
+	Source(std::filesystem::path path, const size_t lineNumber = 0)
 		: m_path(std::move(path)), m_lineNumber(lineNumber)
 	{
 	}
 
-	const std::filesystem::path& path() const
+	[[nodiscard]] const std::filesystem::path& path() const
 	{
 		return m_path;
 	}
 
-	size_t lineNumber() const
+	[[nodiscard]] size_t lineNumber() const
 	{
 		return m_lineNumber;
 	}
@@ -56,10 +58,23 @@ struct Source
 
 	std::string string() const
 	{
-		return m_path.string();
+		if (m_lineNumber == 0)
+			return m_path.string();
+
+		return m_path.string() + ":" + std::to_string(m_lineNumber);
+	}
+
+	operator std::string() const
+	{
+		return string();
 	}
 
 private:
 	std::filesystem::path m_path{};
 	size_t m_lineNumber = 0;
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Source& source)
+{
+	return os << source.string();
+}

@@ -1,17 +1,23 @@
 #include <script.h>
 
-#include <fstream>
-#include <sstream>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
-	// read script from a file
-	std::ifstream file;
-	file.open(argv[1], std::ios::in);
-	std::stringstream buffer;
-	buffer << file.rdbuf();
+	if (argc < 2)
+	{
+		std::cerr << "ERROR: expected a script file path argument" << std::endl;
+		return 1;
+	}
 
-	// run it
-	Script::run(buffer.str());
+	try
+	{
+		Script::run(argv[1]);
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "ERROR: " << e.what() << std::endl;
+		return 1;
+	}
 	return 0;
 }

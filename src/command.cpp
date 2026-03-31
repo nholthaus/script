@@ -1,8 +1,9 @@
 #include "command.h"
 #include <regex>
+#include <source.h>
 
-Command::Command(const std::string& line, size_t lineNumber)
-	: lineNumber(lineNumber)
+Command::Command(const std::string& line, Source source)
+	: source(std::move(source))
 {
 	// split line into command + args
 	// args are a single string so that each newly added command can
