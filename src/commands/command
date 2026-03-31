@@ -4,8 +4,15 @@
 #include <iostream>
 
 // Registers one command using the current source file basename as the command name.
-// The provided code block is used as the command callback body and can access `args`.
-#define REGISTER_COMMAND(code) REGISTER_COMMAND_IMPL(FILE_BASENAME, code)
+// Your, the programmer, write the code body that goes with it
+// (which will be executed as a lambda).
+//
+// Usage:
+// REGISTER_COMMAND
+// {
+//     // body can access `args`
+// };
+#define REGISTER_COMMAND REGISTER_COMMAND_IMPL(FILE_BASENAME)
 
 // The current command name derived from the source file basename.
 #define COMMAND STRINGIFY(FILE_BASENAME)
