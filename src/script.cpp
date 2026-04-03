@@ -12,47 +12,65 @@ void Script::run(const std::filesystem::path& scriptPath)
 {
 	auto& commands = ScriptInstance::setCommands(Parser::parse(scriptPath));
 	auto& executionIndex = ScriptInstance::getInstructionIndex();
-    for (executionIndex = 0; executionIndex < commands.size(); ++executionIndex)
-    {
+	ScriptInstance::pushStack(commands.size());
+	for (executionIndex = 0; executionIndex < commands.size();)
+	{
+		const size_t currentIndex = executionIndex;
 		auto& command = commands[executionIndex];
-    	try
-    	{
-    		dereferenceVariables(command.args);
-    		instance.m_callbacks[command.name](command.args);
-    	}
-    	catch (...)
-    	{
-    		if (!command.name.empty())
-    		{
-    			std::cerr << std::endl << "FATAL ERROR: Invalid command '" << command.name << "'" << std::endl;
-    		}
-    	}
-    }
+		try
+		{
+			instance.m_callbacks[command.name](command.args);
+		}
+		catch (const std::exception& e)
+		{
+			if (!command.name.empty())
+			{
+				const std::string_view message = e.what();
+				std::cerr << std::endl << "FATAL ERROR: '" << command.name << "' ";
+				if (message.empty())
+					std::cerr << "threw an exception";
+				else
+					std::cerr << message;
+				std::cerr << " : " << command.source << std::endl;
+				std::exit(1);
+			}
+		}
+		catch (...)
+		{
+			if (!command.name.empty())
+			{
+				std::cerr << std::endl << "FATAL ERROR: Invalid command '" << command.name << "': " << command.source << std::endl;
+				std::exit(1);
+			}
+		}
+
+		if (executionIndex == currentIndex)
+			++executionIndex;
+	}
 }
 
 void Script::dereferenceVariables(std::string& args)
 {
-    // matches variables that start with $.
-    std::regex varRx(R"(\$(\w*))");
-    std::smatch matches;
-    auto lineBegin = std::sregex_iterator(args.begin(), args.end(), varRx);
-    auto lineEnd = std::sregex_iterator();
+	// matches variables that start with $.
+	const std::regex varRx(R"(\$(\w*))");
+	std::string transformed = args;
 
-    for (auto itr = lineBegin; itr != lineEnd; ++itr)
-    {
-		if (const auto& match = *itr; match.size() >= 2)
-        {
-            auto varName = match[1].str();
-            try
-            {
-                auto varValue = ScriptInstance::getVariable(varName);
-                args.replace(match.position(), match.length(), varValue.c_str());
-            }
-            catch (const std::out_of_range&)
-            {
-                std::cout << "ERROR: undefined variable: " << varName << std::endl;
-                std::exit(1);
-            }
-        }
-    }
+	for (;;)
+	{
+		std::smatch match;
+		if (!std::regex_search(transformed, match, varRx))
+			break;
+
+		if (match.size() >= 2)
+		{
+			const auto varName = match[1].str();
+			if (!ScriptInstance::hasVariable(varName))
+				throw std::runtime_error("Undefined variable '" + varName + "'");
+
+			const auto varValue = ScriptInstance::getVariable(varName);
+			transformed.replace(match.position(), match.length(), varValue.c_str());
+		}
+	}
+
+	args = std::move(transformed);
 }

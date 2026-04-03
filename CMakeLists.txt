@@ -15,6 +15,19 @@ file(GLOB COMMAND_SOURCE_FILES CONFIGURE_DEPENDS
 )
 
 #-------------------------------------------------------------------------------
+#	TYPES SOURCE CODE
+#-------------------------------------------------------------------------------
+
+# Glob utils files and configure CMake to reconfigure when files are added/removed
+file(GLOB TYPES_HEADER_FILES CONFIGURE_DEPENDS
+		"src/types/*.h"
+)
+
+file(GLOB TYPES_SOURCE_FILES CONFIGURE_DEPENDS
+		"src/types/*.cpp"
+)
+
+#-------------------------------------------------------------------------------
 #	UTILS SOURCE CODE
 #-------------------------------------------------------------------------------
 
@@ -42,7 +55,10 @@ file(GLOB SOURCE_FILES CONFIGURE_DEPENDS
 
 # on windows, append headers to source so they show up in visual studio
 if(WIN32)
-	LIST(APPEND SOURCE_FILES ${HEADER_FILES} ${UTILS_HEADER_FILES})
+	LIST(APPEND SOURCE_FILES
+			${HEADER_FILES}
+			${TYPES_HEADER_FILES}
+			${UTILS_HEADER_FILES})
 endif()
 
 # Set the project name
@@ -111,7 +127,7 @@ add_executable(${PROJECT_NAME}
 		${SOURCE_FILES}
 		${COMMAND_SOURCE_FILES}
 		${UTILS_SOURCE_FILES}
-		src/utils/no_op.h
+		${TYPES_SOURCE_FILES}
 )
 
 define_file_basename_for_sources(${PROJECT_NAME})

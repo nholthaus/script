@@ -1,0 +1,10 @@
+# TODO - make this work
+for i 0 10 inc
+    for j 10 0 dec
+        echo .
+#        mul product $i $j
+#        sum total $product $j
+#        echo $total
+    end_for
+    endl
+end_for

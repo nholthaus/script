@@ -8,6 +8,94 @@
 #include <unordered_map>
 #include <vector>
 
+struct StringValue
+{
+	explicit StringValue(std::string value)
+	  : m_value(std::move(value))
+	{
+	}
+
+	operator const std::string&() const
+	{
+		return m_value;
+	}
+
+	operator std::string_view() const
+	{
+		return m_value;
+	}
+
+	const std::string& str() const
+	{
+		return m_value;
+	}
+
+	std::string_view view() const
+	{
+		return m_value;
+	}
+
+	int asInt() const
+	{
+		return parseIntegral<int>();
+	}
+
+	long asLong() const
+	{
+		return parseIntegral<long>();
+	}
+
+	long long asLongLong() const
+	{
+		return parseIntegral<long long>();
+	}
+
+	unsigned asUnsigned() const
+	{
+		return parseIntegral<unsigned>();
+	}
+
+	size_t asSizeT() const
+	{
+		return parseIntegral<size_t>();
+	}
+
+	float asFloat() const
+	{
+		return std::stof(m_value);
+	}
+
+	double asDouble() const
+	{
+		return std::stod(m_value);
+	}
+
+	bool asBool() const
+	{
+		if (m_value == "true" || m_value == "1")
+			return true;
+		if (m_value == "false" || m_value == "0")
+			return false;
+
+		throw std::invalid_argument("String value is not a bool: " + m_value);
+	}
+
+private:
+	template <typename T>
+	T parseIntegral() const
+	{
+		T parsed{};
+		const auto* begin = m_value.data();
+		const auto* end = begin + m_value.size();
+		if (const auto [ptr, ec] = std::from_chars(begin, end, parsed); ec != std::errc{} || ptr != end)
+			throw std::invalid_argument("String value is not an integer: " + m_value);
+
+		return parsed;
+	}
+
+	std::string m_value;
+};
+
 struct StringMap
 {
 	using Map = std::unordered_map<std::string, std::string>;
@@ -27,14 +115,49 @@ struct StringMap
 		return m_values.contains(key);
 	}
 
+	bool empty() const
+	{
+		return m_values.empty();
+	}
+
+	Map::iterator find(const std::string& key)
+	{
+		return m_values.find(key);
+	}
+
+	Map::const_iterator find(const std::string& key) const
+	{
+		return m_values.find(key);
+	}
+
+	std::string& insert_or_assign(const std::string& key, const std::string& value)
+	{
+		return m_values.insert_or_assign(key, value).first->second;
+	}
+
+	void clear()
+	{
+		m_values.clear();
+	}
+
 	bool remove(const std::string& key)
 	{
 		return m_values.erase(key) > 0;
 	}
 
+	size_t size() const
+	{
+		return m_values.size();
+	}
+
 	std::string_view view(const std::string& key) const
 	{
 		return (*this)[key];
+	}
+
+	StringValue get(const std::string& key) const
+	{
+		return StringValue((*this)[key]);
 	}
 
 	int asInt(const std::string& key) const
@@ -97,9 +220,19 @@ struct StringMap
 		return m_values.begin();
 	}
 
+	Map::iterator end()
+	{
+		return m_values.end();
+	}
+
 	Map::const_iterator end() const
 	{
 		return m_values.end();
+	}
+
+	Map::iterator begin()
+	{
+		return m_values.begin();
 	}
 
 private:

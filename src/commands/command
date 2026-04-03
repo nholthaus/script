@@ -1,7 +1,11 @@
 #pragma once
 
 #include "command_impl.h"
+#include "script.h"
 #include <iostream>
+#include <format>
+#include <split.h>
+#include <findMatch.h>
 
 // Registers one command using the current source file basename as the command name.
 // Your, the programmer, write the code body that goes with it
@@ -40,8 +44,14 @@
 // Sets the current instruction index.
 #define SET_INSTRUCTION(index) ScriptInstance::setInstruction(index)
 
-// Pushes the current instruction index onto the runtime call stack.
-#define PUSH_STACK ScriptInstance::pushStack()
+// Resolves $variables in a string. Returns false and leaves the input unchanged on failure.
+#define DEREFERENCE(text) Script::dereferenceVariables(text)
+
+// Pushes an inheriting context frame onto the runtime call stack.
+#define PUSH_STACK(returnIndex) ScriptInstance::pushStack(returnIndex, ContextFrame::INHERIT)
+
+// Pushes an isolated context frame onto the runtime call stack.
+#define PUSH_STACK_ISOLATED(returnIndex) ScriptInstance::pushStack(returnIndex, ContextFrame::ISOLATE)
 
 // Restores the most recent instruction index from the runtime call stack.
 #define POP_STACK ScriptInstance::popStack()
@@ -49,14 +59,32 @@
 // Sets or overwrites a variable value.
 #define SET_VARIABLE(name, value) ScriptInstance::setVariable(name, value)
 
-// Gets a variable value, throwing if the variable does not exist.
-#define GET_VARIABLE(name) ScriptInstance::getVariable(name)
+// Sets or overwrites current-frame metadata.
+#define SET_METADATA(name, value) ScriptInstance::setMetadata(name, value)
+
+// Exposes the current frame's variable map and typed helpers like `asInt`.
+#define VARIABLES ScriptInstance::getLocalVariables()
+
+// Gets a visible variable value with typed helpers like `asInt()`.
+#define GET_VARIABLE(name) StringValue(ScriptInstance::getVariable(name))
+
+// Exposes the current frame's metadata map and typed helpers like `asInt`.
+#define METADATA ScriptInstance::getLocalMetadata()
+
+// Gets current-frame metadata by key with typed helpers like `asInt()`.
+#define GET_METADATA(name) METADATA.get(name)
 
 // Returns whether a variable exists.
 #define HAS_VARIABLE(name) ScriptInstance::hasVariable(name)
 
+// Returns whether current-frame metadata exists.
+#define HAS_METADATA(name) ScriptInstance::hasMetadata(name)
+
 // Removes a variable and returns whether one was removed.
 #define REMOVE_VARIABLE(name) ScriptInstance::removeVariable(name)
 
+// Removes current-frame metadata and returns whether one was removed.
+#define REMOVE_METADATA(name) ScriptInstance::removeMetadata(name)
+
 // Writes a standard command error message with the command name and line number.
-#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << " : " << SOURCE << std::endl;
+#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << " : " << SOURCE; std::exit(1);

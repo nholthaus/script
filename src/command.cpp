@@ -8,7 +8,7 @@ Command::Command(const std::string& line, Source source)
 	// split line into command + args
 	// args are a single string so that each newly added command can
 	// parse them as they please
-	const std::regex rgx("(.*?)\\s+(.*)");
+	const std::regex rgx(R"(^\s*(\S+)(?:\s+(.*))?$)");
 	if (std::smatch matches; std::regex_match(line, matches, rgx))
 	{
 		if (matches.size() >= 2)
