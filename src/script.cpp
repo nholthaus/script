@@ -21,6 +21,14 @@ void Script::run(const std::filesystem::path& scriptPath)
 		{
 			instance.m_callbacks[command.name](command.args);
 		}
+		catch (const std::bad_function_call&)
+		{
+			if (!command.name.empty())
+			{
+				std::cerr << std::endl << "FATAL ERROR: Unknown command '" << command.name << "' : " << command.source << std::endl;
+				std::exit(1);
+			}
+		}
 		catch (const std::exception& e)
 		{
 			if (!command.name.empty())

@@ -6,6 +6,8 @@ This project demonstrates a simple command registration pattern where commands a
 
 ## Design Philosophy
 
+“Ghetto BASIC with a stack frame” - OpenAI Codex
+
 This project is intentionally built around a very small core runtime.
 
 The core is responsible for:

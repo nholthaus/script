@@ -5,13 +5,15 @@ REGISTER_COMMAND
 {
 	auto splitArgs = utils::split(args);
 
+	// The built-in loop only understands operators with predictable direction.
 	enum class Direction
 	{
 		Increment,
 		Decrement,
 	};
 
-	// loop initialization
+	// The first visit initializes loop state. After `end_for` jumps back here,
+	// the saved metadata tells us to advance or finish the existing loop instead.
 	if (!HAS_METADATA("LOOP_START_INDEX") ||
 		(HAS_METADATA("LOOP_START_INDEX") && GET_METADATA("LOOP_START_INDEX").asSizeT() != INSTRUCTION))
 	{
@@ -36,11 +38,12 @@ REGISTER_COMMAND
 		long long start = std::stoll(splitArgs[1]);
 		long long end   = std::stoll(splitArgs[2]);
 
-		// push a new stack frame scope
+		// Return to the instruction immediately after the matching `end_for`.
 		const auto index = utils::findMatch("end_for");
 		PUSH_STACK(index + 1);
 
-		// set the required loop metadata/debug info
+		// `end_for` uses this to jump back here, and the next visit uses it to
+		// decide how to update the loop variable.
 		SET_METADATA("LOOP_START_INDEX", std::to_string(INSTRUCTION));
 		SET_METADATA("LOOP_END_INDEX", std::to_string(index));
 		SET_METADATA("LOOP_START_VALUE", splitArgs[1]);
@@ -49,8 +52,8 @@ REGISTER_COMMAND
 
 		SET_VARIABLE(splitArgs[0], std::to_string(start));
 
-		const bool shouldSkip = direction == Direction::Increment ? start >= end : start <= end;
-		if (shouldSkip)
+		// The end value is exclusive, so some ranges execute zero times.
+		if (direction == Direction::Increment ? start >= end : start <= end)
 			POP_STACK;
 	}
 	else
@@ -69,8 +72,9 @@ REGISTER_COMMAND
 
 		SET_VARIABLE(splitArgs[0], std::to_string(loopVar));
 
-		const bool shouldExit = unaryFunc == "inc" ? loopVar >= end : loopVar <= end;
-		if (shouldExit)
+		// Advance once per completed body execution, then stop when the exclusive
+		// bound is reached or crossed.
+		if (unaryFunc == "inc" ? loopVar >= end : loopVar <= end)
 			POP_STACK;
 	}
 };

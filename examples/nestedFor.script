@@ -1,10 +1,20 @@
-# TODO - make this work
+# Counts from 0 to $count.
+# This needs a future conditional command so values above $count are skipped.
+# i is the high digit.
+# j counts backward from 10 to 1, so low = 10 - j gives 0 to 9.
+
+var count 99
+
 for i 0 10 inc
     for j 10 0 dec
         echo .
-#        mul product $i $j
-#        sum total $product $j
-#        echo $total
+#        sum neg_j_minus_one -1 $j
+#        sum low 10 $neg_j_minus_one
+#        mul high $i 10
+#        sum value $high $low
+#        if_lte $value $count
+#            echo $value
+#        end_if
     end_for
     endl
 end_for
