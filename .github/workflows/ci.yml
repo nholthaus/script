@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
+      checks: write
 
     steps:
       - name: Check out repository
@@ -34,7 +36,19 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          ctest --test-dir build --output-on-failure 2>&1 | tee test.log
+          ctest --test-dir build --output-on-failure --output-junit test-results.xml 2>&1 | tee test.log
+
+      - name: Publish Test Report
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@v2
+        with:
+          name: CTest Results
+          path: test-results.xml
+          reporter: java-junit
+          use-actions-summary: true
+          list-suites: all
+          list-tests: all
+          fail-on-empty: true
 
       - name: Publish Test Summary
         if: always()
@@ -60,3 +74,4 @@ jobs:
           path: |
             build.log
             test.log
+            test-results.xml
