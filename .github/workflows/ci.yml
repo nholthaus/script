@@ -15,6 +15,7 @@ jobs:
       contents: read
       actions: read
       checks: write
+      pull-requests: write
 
     steps:
       - name: Check out repository
@@ -38,17 +39,16 @@ jobs:
           set -o pipefail
           ctest --test-dir build --output-on-failure --output-junit test-results.xml 2>&1 | tee test.log
 
-      - name: Publish Test Report
+      - name: Publish Test Results
         if: ${{ !cancelled() }}
-        uses: dorny/test-reporter@v2
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          name: CTest Results
-          path: build/test-results.xml
-          reporter: java-junit
-          use-actions-summary: true
-          list-suites: all
-          list-tests: all
-          fail-on-empty: true
+          files: build/test-results.xml
+          check_name: Test Results
+          comment_title: Test Results
+          comment_mode: ${{ github.event_name == 'pull_request' && 'always' || 'off' }}
+          report_individual_runs: true
+          check_run_annotations: all tests, skipped tests
 
       - name: Publish Test Summary
         if: always()
