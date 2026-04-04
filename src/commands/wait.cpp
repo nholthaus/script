@@ -2,7 +2,7 @@
 #include <thread>
 
 REGISTER_COMMAND
-(
+{
 	int value = 0;
 	try
 	{
@@ -16,4 +16,4 @@ REGISTER_COMMAND
 	}
 
 	std::this_thread::sleep_for(std::chrono::seconds(value));
-)
+};

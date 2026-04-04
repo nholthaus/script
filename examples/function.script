@@ -1,0 +1,4 @@
+function print str
+{
+    echo "Hello World"
+}
