@@ -11,6 +11,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Check out repository
@@ -23,7 +25,38 @@ jobs:
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 
       - name: Build
-        run: cmake --build build
+        shell: bash
+        run: |
+          set -o pipefail
+          cmake --build build 2>&1 | tee build.log
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure
+        shell: bash
+        run: |
+          set -o pipefail
+          ctest --test-dir build --output-on-failure 2>&1 | tee test.log
+
+      - name: Publish Test Summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Build Output"
+            echo '```text'
+            cat build.log
+            echo '```'
+            echo
+            echo "## Test Output"
+            echo '```text'
+            cat test.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: |
+            build.log
+            test.log
