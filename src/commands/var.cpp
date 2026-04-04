@@ -3,11 +3,12 @@
 
 REGISTER_COMMAND
 {
-	const auto splitArgs = utils::splitQuoted(args);
+	auto splitArgs = utils::splitQuoted(args);
 	if (splitArgs.size() != 2)
 	{
 		ERROR("requires <name> <value> arguments");
 	}
 
+	DEREFERENCE(splitArgs[1]);
 	SET_VARIABLE(splitArgs[0], splitArgs[1]);
 };

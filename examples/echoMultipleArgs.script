@@ -1,0 +1,4 @@
+var greeting Hello
+var target World
+echo $greeting, $target!
+ret 0

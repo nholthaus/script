@@ -131,3 +131,20 @@ add_executable(${PROJECT_NAME}
 )
 
 define_file_basename_for_sources(${PROJECT_NAME})
+
+enable_testing()
+
+function(add_script_output_test test_name script_file expected_file)
+	add_test(
+		NAME ${test_name}
+		COMMAND ${CMAKE_COMMAND}
+			-DSCRIPT_EXECUTABLE=$<TARGET_FILE:${PROJECT_NAME}>
+			-DSCRIPT_FILE=${PROJECT_SOURCE_DIR}/${script_file}
+			-DEXPECTED_FILE=${PROJECT_SOURCE_DIR}/${expected_file}
+			-P ${PROJECT_SOURCE_DIR}/tests/RunScriptOutputTest.cmake
+	)
+endfunction()
+
+add_script_output_test(script_hello_world examples/helloWorld.script tests/expected/helloWorld.txt)
+add_script_output_test(script_nested_for examples/nestedFor.script tests/expected/nestedFor.txt)
+add_script_output_test(script_echo_multiple_args examples/echoMultipleArgs.script tests/expected/echoMultipleArgs.txt)

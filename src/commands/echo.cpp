@@ -2,6 +2,8 @@
 
 REGISTER_COMMAND
 {
-	std::cout << args;
+	auto output = args;
+	DEREFERENCE(output);
+	std::cout << output;
 	std::cout.flush();
 };
