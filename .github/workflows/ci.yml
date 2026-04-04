@@ -43,7 +43,7 @@ jobs:
         uses: dorny/test-reporter@v2
         with:
           name: CTest Results
-          path: test-results.xml
+          path: build/test-results.xml
           reporter: java-junit
           use-actions-summary: true
           list-suites: all
@@ -74,4 +74,4 @@ jobs:
           path: |
             build.log
             test.log
-            test-results.xml
+            build/test-results.xml
