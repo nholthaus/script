@@ -6,6 +6,8 @@ This project demonstrates a simple command registration pattern where commands a
 
 ## Design Philosophy
 
+“Ghetto BASIC with a stack frame” - OpenAI Codex
+
 This project is intentionally built around a very small core runtime.
 
 The core is responsible for:
@@ -173,11 +175,7 @@ echo Count: $count
 
 ## Adding Commands
 
-Commands are registered through the `REGISTER_COMMAND(...)` macro in files under `src/commands/`.
-
-Commands are required to:
-- split their own arguments (see `utils` for common helpers)
-- error check their own args (use `ERROR(...)` and `LINE`)
+Commands are registered through the `REGISTER_COMMAND` macro in files under `src/commands/`.
 
 All variables will be dereferenced prior to the invocation of the command callback.
 
@@ -188,11 +186,18 @@ Minimal example:
 #include <iostream>
 
 REGISTER_COMMAND
-(
+{
     std::cout << args;
     std::cout.flush();
-)
+};
 ```
+
+Best practices:
+- Split and validate your own arguments early; use helpers from `utils` when they fit.
+- Fail with a clear message when input is invalid; prefer `ERROR(...)` over silent returns.
+- Keep command bodies small and focused on one job.
+- Treat `args` as already-expanded script input, not raw source text.
+- Use `try`/`catch` when a command can throw on normal bad input.
 
 How registration works:
 
@@ -205,13 +210,13 @@ How registration works:
 User-facing command macros are defined in `src/commands/command`.
 Macro implementation details live in `src/commands/command_impl.h`.
 
-### `REGISTER_COMMAND(code)`
+### `REGISTER_COMMAND`
 
 Primary macro for command authors.
 
 Use this in a command source file under `src/commands/` to register one command callback.
 
-- Input: a C++ code block that can use `args` (`const std::string&`)
+- Input: a C++ lambda body that can use `args` (`const std::string&`)
 - Behavior: creates a static registration object at startup
 - Command name: inferred from the file basename via `FILE_BASENAME`
 

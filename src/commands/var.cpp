@@ -2,7 +2,7 @@
 #include <split.h>
 
 REGISTER_COMMAND
-(
+{
 	const auto splitArgs = utils::splitQuoted(args);
 	if (splitArgs.size() != 2)
 	{
@@ -10,4 +10,4 @@ REGISTER_COMMAND
 	}
 
 	SET_VARIABLE(splitArgs[0], splitArgs[1]);
-)
+};

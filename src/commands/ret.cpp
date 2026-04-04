@@ -1,19 +1,24 @@
 #include <command>
+#include <format>
+#include <split.h>
 
 REGISTER_COMMAND
-(
-	int value = 0;
+{
 	try
 	{
-		if (args.size() != 1)
-			throw std::invalid_argument("Too many arguments");
-		value = std::stoi(args);
-	}
-	catch (...)
-	{
-		ERROR("requires a single integer argument <value>");
-	}
+		size_t numArgs = utils::split(args).size();
+		if (args.empty())
+			throw std::invalid_argument("requires a single integer argument <value>");
+		if (numArgs > 1)
+			throw std::invalid_argument(std::format("Too many arguments. Expected 1 got {}", numArgs));
 
-	if (!POP_STACK)
-		std::exit(value);
-)
+		const int value = std::stoi(args);
+
+		if (!POP_STACK)
+			std::exit(value);
+	}
+	catch (const std::exception& e)
+	{
+		ERROR(e.what());
+	}
+};

@@ -2,6 +2,6 @@
 
 REGISTER_COMMAND
 {
-	std::cout << args;
+	std::cout << std::endl;
 	std::cout.flush();
 };
