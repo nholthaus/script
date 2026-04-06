@@ -1,0 +1,2 @@
+mul product 6 7
+echo $product

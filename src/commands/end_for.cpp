@@ -1,5 +1,16 @@
 #include <command>
 
+/*
+NAME
+    end_for - jump back to the matching for loop
+
+SYNOPSIS
+    end_for
+
+DESCRIPTION
+    Uses loop metadata recorded by for to continue iteration or fall through
+    when the loop is complete.
+*/
 REGISTER_COMMAND
 {
 	try

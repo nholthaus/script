@@ -1,0 +1,3 @@
+echo before
+ret 0
+echo after

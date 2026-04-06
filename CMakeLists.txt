@@ -131,3 +131,44 @@ add_executable(${PROJECT_NAME}
 )
 
 define_file_basename_for_sources(${PROJECT_NAME})
+
+enable_testing()
+
+function(add_script_output_test test_name script_file expected_file)
+	add_test(
+		NAME ${test_name}
+		COMMAND ${CMAKE_COMMAND}
+			-DSCRIPT_EXECUTABLE=$<TARGET_FILE:${PROJECT_NAME}>
+			-DSCRIPT_FILE=${script_file}
+			-DEXPECTED_FILE=${expected_file}
+			-P ${PROJECT_SOURCE_DIR}/tests/RunScriptOutputTest.cmake
+	)
+endfunction()
+
+file(GLOB TEST_SCRIPT_FILES CONFIGURE_DEPENDS
+	"${PROJECT_SOURCE_DIR}/tests/scripts/*.script"
+)
+
+foreach(test_script ${TEST_SCRIPT_FILES})
+	get_filename_component(test_name "${test_script}" NAME_WE)
+	set(expected_file "${PROJECT_SOURCE_DIR}/tests/expected/${test_name}.txt")
+
+	if (NOT EXISTS "${expected_file}")
+		message(FATAL_ERROR "Missing expected output for ${test_script}: ${expected_file}")
+	endif()
+
+	add_script_output_test("script_${test_name}" "${test_script}" "${expected_file}")
+endforeach()
+
+file(GLOB EXAMPLE_SCRIPT_FILES CONFIGURE_DEPENDS
+	"${PROJECT_SOURCE_DIR}/examples/*.script"
+)
+
+foreach(example_script ${EXAMPLE_SCRIPT_FILES})
+	get_filename_component(example_name "${example_script}" NAME_WE)
+	set(example_expected_file "${PROJECT_SOURCE_DIR}/tests/expected/examples/${example_name}.txt")
+
+	if (EXISTS "${example_expected_file}")
+		add_script_output_test("example_${example_name}" "${example_script}" "${example_expected_file}")
+	endif()
+endforeach()
