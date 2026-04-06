@@ -139,12 +139,23 @@ function(add_script_output_test test_name script_file expected_file)
 		NAME ${test_name}
 		COMMAND ${CMAKE_COMMAND}
 			-DSCRIPT_EXECUTABLE=$<TARGET_FILE:${PROJECT_NAME}>
-			-DSCRIPT_FILE=${PROJECT_SOURCE_DIR}/${script_file}
-			-DEXPECTED_FILE=${PROJECT_SOURCE_DIR}/${expected_file}
+			-DSCRIPT_FILE=${script_file}
+			-DEXPECTED_FILE=${expected_file}
 			-P ${PROJECT_SOURCE_DIR}/tests/RunScriptOutputTest.cmake
 	)
 endfunction()
 
-add_script_output_test(script_hello_world examples/helloWorld.script tests/expected/helloWorld.txt)
-add_script_output_test(script_nested_for examples/nestedFor.script tests/expected/nestedFor.txt)
-add_script_output_test(script_echo_multiple_args examples/echoMultipleArgs.script tests/expected/echoMultipleArgs.txt)
+file(GLOB TEST_SCRIPT_FILES CONFIGURE_DEPENDS
+	"${PROJECT_SOURCE_DIR}/tests/scripts/*.script"
+)
+
+foreach(test_script ${TEST_SCRIPT_FILES})
+	get_filename_component(test_name "${test_script}" NAME_WE)
+	set(expected_file "${PROJECT_SOURCE_DIR}/tests/expected/${test_name}.txt")
+
+	if (NOT EXISTS "${expected_file}")
+		message(FATAL_ERROR "Missing expected output for ${test_script}: ${expected_file}")
+	endif()
+
+	add_script_output_test("script_${test_name}" "${test_script}" "${expected_file}")
+endforeach()

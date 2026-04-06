@@ -1,0 +1,4 @@
+# this should be ignored
+// this too
+/// and this
+echo ok
