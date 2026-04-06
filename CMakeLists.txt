@@ -159,3 +159,16 @@ foreach(test_script ${TEST_SCRIPT_FILES})
 
 	add_script_output_test("script_${test_name}" "${test_script}" "${expected_file}")
 endforeach()
+
+file(GLOB EXAMPLE_SCRIPT_FILES CONFIGURE_DEPENDS
+	"${PROJECT_SOURCE_DIR}/examples/*.script"
+)
+
+foreach(example_script ${EXAMPLE_SCRIPT_FILES})
+	get_filename_component(example_name "${example_script}" NAME_WE)
+	set(example_expected_file "${PROJECT_SOURCE_DIR}/tests/expected/examples/${example_name}.txt")
+
+	if (EXISTS "${example_expected_file}")
+		add_script_output_test("example_${example_name}" "${example_script}" "${example_expected_file}")
+	endif()
+endforeach()
