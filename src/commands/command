@@ -87,4 +87,4 @@
 #define REMOVE_METADATA(name) ScriptInstance::removeMetadata(name)
 
 // Writes a standard command error message with the command name and line number.
-#define ERROR(msg) std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << " : " << SOURCE; std::exit(1);
+#define ERROR(msg) {std::cerr << std::endl << "ERROR: '" << COMMAND << "' " << msg << " : " << SOURCE; std::exit(1);}

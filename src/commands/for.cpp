@@ -1,6 +1,18 @@
 #include <command>
 #include <findMatch.h>
 
+/*
+NAME
+    for - execute a counted loop
+
+SYNOPSIS
+    for <loop_var> <start> <end> <unary_func>
+
+DESCRIPTION
+    Iterates from <start> toward the exclusive <end> bound using unary_func,
+    which must currently be inc or dec. The current value is stored in
+    <loop_var> for the body of the loop.
+*/
 REGISTER_COMMAND
 {
 	auto splitArgs = utils::split(args);

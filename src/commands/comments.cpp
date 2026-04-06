@@ -1,6 +1,19 @@
 #include <command>
 #include <no_op.h>
 
+/*
+NAME
+    comments - register comment tokens as no-op commands
+
+SYNOPSIS
+    # <text>
+    // <text>
+    /// <text>
+
+DESCRIPTION
+    Treats comment-prefixed lines as valid commands that do nothing when
+    executed.
+*/
 
 namespace
 {

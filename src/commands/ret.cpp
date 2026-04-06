@@ -2,6 +2,17 @@
 #include <format>
 #include <split.h>
 
+/*
+NAME
+    ret - return from the current script frame
+
+SYNOPSIS
+    ret <value>
+
+DESCRIPTION
+    Returns control to the previous stack frame with the given integer status.
+    If there is no previous frame, the process exits with that status code.
+*/
 REGISTER_COMMAND
 {
 	try

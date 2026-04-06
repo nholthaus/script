@@ -7,9 +7,8 @@ var count 99
 
 for i 0 10 inc
     for j 10 0 dec
-        echo .
-#        sum neg_j_minus_one -1 $j
-#        sum low 10 $neg_j_minus_one
+        sum neg_j_minus_one -1 $j
+        sum low 10 $neg_j_minus_one
 #        mul high $i 10
 #        sum value $high $low
 #        if_lte $value $count

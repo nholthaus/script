@@ -1,6 +1,17 @@
 #include <command>
 #include <no_op.h>
 
+/*
+NAME
+    scope - register brace tokens as no-op commands
+
+SYNOPSIS
+    {
+    }
+
+DESCRIPTION
+    Treats brace-only lines as valid commands that do nothing when executed.
+*/
 
 namespace
 {

@@ -2,6 +2,17 @@
 #include <cstdlib>
 #include <thread>
 
+/*
+NAME
+    wait - pause execution for a number of seconds
+
+SYNOPSIS
+    wait <seconds>
+
+DESCRIPTION
+    Expands the argument, parses it as an integer second count, and sleeps for
+    that duration unless test mode disables real waits.
+*/
 REGISTER_COMMAND
 {
 	int value = 0;
